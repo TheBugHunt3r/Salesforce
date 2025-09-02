@@ -6,14 +6,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
 
 public class Picklist {
-
     WebDriver driver;
-    String label;
     WebDriverWait wait;
+    String label;
 
     public Picklist(WebDriver driver, String label) {
         this.driver = driver;
@@ -22,32 +20,21 @@ public class Picklist {
     }
 
     public void select(String option) {
+        WebElement labelElement = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath(String.format("//label[text()='%s']//ancestor::lightning-picklist//button", label))
+        ));
 
-        WebElement picklistButton = driver.findElement(By.xpath(String.format(
-                "//label[text()='%s']//ancestor::lightning-picklist//button",
-                label
-        )));
+        scrollToElement(labelElement);
 
-        scrollToElement(picklistButton);
-        picklistButton.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", labelElement);
 
-        WebElement optionElement = driver.findElement(By.xpath(String.format(
-                "//label[text()='%s']//ancestor::lightning-picklist//lightning-base-combobox-item//span[text()='%s']",
-                label, option
-        )));
+        WebElement optionElement = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath(String.format("//label[text()='%s']//ancestor::lightning-picklist//lightning-base-combobox-item//span[text()='%s']", label, option))
+        ));
 
         scrollToElement(optionElement);
-        optionElement.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", optionElement);
     }
-
-    /*public void select(String option) {
-        WebElement labelElement = wait.until(ExpectedConditions.elementToBeClickable(
-        driver.findElement(By.xpath(String.format("//label[text()='%s']//ancestor::lightning-picklist//button", label)))
-                .click();
-        driver.findElement(By.xpath(String.format("//label[text()='%s']//ancestor::lightning-picklist//lightning-base-" +
-                "combobox-item//span[text()='%s']", label, option))).click();
-
-    }*/
 
     private void scrollToElement(WebElement element) {
         ((JavascriptExecutor) driver).executeScript(

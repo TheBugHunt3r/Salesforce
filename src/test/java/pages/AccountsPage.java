@@ -10,7 +10,8 @@ public class AccountsPage extends BasePage{
         super(driver);
     }
 
-    public void checkAccountCreated() {
+    public AccountsPage checkAccountCreated() {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.forceToastMessage")));
+        return this;
     }
 }
