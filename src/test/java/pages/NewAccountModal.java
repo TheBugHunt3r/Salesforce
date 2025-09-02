@@ -1,5 +1,6 @@
 package pages;
 
+import dto.Account;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -22,26 +23,48 @@ public class NewAccountModal extends BasePage {
         super(driver);
     }
 
-    public void open() {
+    public NewAccountModal open() {
         driver.get(BASE_URL+ "lightning/o/Account/new?count=1");
+        return this;
     }
 
-    public void createAccount(String name, String phone, String fax, String website, String site, String city, String date,
-                              String Street, String street) {
-        new Input(driver, "Account Name").write(name);
-        new Input(driver, "Phone").write(phone);
-        new Input(driver, "Fax").write(fax);
-        new Input(driver, "Website").write(website);
-        new Input(driver, "Account Site").write(site);
-        new Input(driver, "Billing City").write(city);
-        new Input(driver, "SLA Expiration Date").write(date);
-        new CheckBox(driver, "VIP Client").select();
+    public NewAccountModal createAccount() {
+        Account account = Account.builder()
+                .name("Account Name")
+                .phone("Phone")
+                .fax("Fax")
+                .website("Website")
+                .site("Account Site")
+                .ownership("Ownership")
+                .city("Billing City")
+                .street("Shipping Street")
+                .priority("Customer Priority")
+                .build();
+        return this;
+    }
+
+    public NewAccountModal createAccount(Account account) {
+        new Input(driver, "Account Name").write(account.getName());
+        new Input(driver, "Phone").write(account.getPhone());
+        new Input(driver, "Fax").write(account.getFax());
+        new Input(driver, "Website").write(account.getWebsite());
+        new Input(driver, "Account Site").write(account.getSite());
+        new Picklist(driver, "Ownership").select("Public");
+        new Input(driver, "Billing City").write(account.getCity());
         new CheckBox(driver, "VIP Client").select();
         new CheckBox(driver, "TeachMeSkills").select();
-        new Picklist(driver, "Ownership").select("Public");
+        new TextArea(driver, "Shipping Street").write(account.getStreet());
         new Picklist(driver, "Customer Priority").select("High");
-        new Picklist(driver, "SLA").select("Silver");
-        new TextArea(driver, "Billing Street").write(Street);
-        new TextArea(driver, "Shipping Street").write(street);
+        return this;
+    }
+
+    public NewAccountModal isPageOpened() {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@name='SaveEdit']")));
+        return this;
+    }
+
+    public NewAccountModal clickSaveButton() {
+        driver.findElement(By.xpath("//*[@name='SaveEdit']")).click();
+        return this;
     }
 }

@@ -1,27 +1,27 @@
-package pages;
+package steps;
 
+import dto.Account;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import pages.LoginPage;
+import pages.NewAccountModal;
 
-import java.time.Duration;
-
-public class BasePage {
+public class AccountStep {
 
     WebDriver driver;
-    WebDriverWait wait;
-    public final String BASE_URL = "https://tms9-dev-ed.develop.my.salesforce.com/";
+    NewAccountModal newAccountModal;
 
-
-    public BasePage(WebDriver driver) {
+    public AccountStep(WebDriver driver) {
         this.driver = driver;
-        wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        newAccountModal = new NewAccountModal(driver);
     }
 
-    public void clickJS() {
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("argument[0].click()");
+    public void createAccount(Account account) {
+        newAccountModal.open()
+                .isPageOpened()
+                .createAccount(account)
+                .clickSaveButton();
     }
 
     public void waitForPageLoaded() {
